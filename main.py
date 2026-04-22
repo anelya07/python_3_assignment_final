@@ -62,8 +62,15 @@ print(f'Data loaded successfully: {len(students)} students')
 preview_data(students)
 result = analyse_gpa(students)
 
-
-
+print("Lambda / Map / Filter")
+print('-' * 30)
+high_gpa = list(filter(lambda s: float(s['GPA']) > 3.8, students))
+print("GPA > 3.8: ", len(high_gpa))
+gpa_values = list(map(lambda s: float(s['GPA']), students))
+print("GPA values (first 5): ", gpa_values[:5])
+hard_workers = list(filter(lambda s: float(s['study_hours_per_day']) > 4, students))
+print("study_hours_per_day > 4: ", len(hard_workers))
+print('-' * 30)
 
 
 # task 4(A4)
