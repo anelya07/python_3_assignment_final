@@ -20,15 +20,23 @@ def check_files():
     return True
 
 def load_data(filename):
-    with open(filename, encoding = 'utf-8') as file:
-        reader = csv.DictReader(file)
-        return list(reader)
+    try:
+        print("\nLoading data...")
+        with open(filename, encoding = 'utf-8') as file:
+            reader = csv.DictReader(file)
+            return list(reader)
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found. Please check the filename.")
+        return None
+    except Exception:
+        print("General Error")
+        return None
 
 def preview_data(students, n=5):
     print(f'\nFirst {n} rows: ')
     print('-' * 30)
     for row in students[:n]:
-        print(f"{row['student_id']} | {row['age']} | {row['gender']} | {row['country']} | {row['GPA']}")
+        print(f"{row['student_id']} | {row['age']} | {row['gender']} | {row['country']} | GPA: {row['GPA']}")
     print('-' * 30)
 
 def analyse_gpa(students):
@@ -38,10 +46,14 @@ def analyse_gpa(students):
     counter = 0
     print('Total students: ', len(students))
     for row in students:
-        value = float(row['GPA'])
-        gpas.append(value)
-        if value > 3.5:
-            counter+=1
+        try:
+            value = float(row['GPA'])
+            gpas.append(value)
+            if value > 3.5:
+                counter+=1
+        except ValueError:
+            print(f"Warning: could not convert value for student {row['student_id']} — skipping row.")
+            continue
 
     avg_gpa = sum(gpas) / len(gpas)
     max_gpa = max(gpas)
@@ -56,7 +68,6 @@ def analyse_gpa(students):
     return result
 
 check_files()
-print("\nLoading data...")
 students = load_data('students.csv')
 print(f'Data loaded successfully: {len(students)} students')
 preview_data(students)
@@ -65,26 +76,26 @@ result = analyse_gpa(students)
 print("Lambda / Map / Filter")
 print('-' * 30)
 high_gpa = list(filter(lambda s: float(s['GPA']) > 3.8, students))
-print("GPA > 3.8: ", len(high_gpa))
+print("Students with GPA > 3.8: ", len(high_gpa))
 gpa_values = list(map(lambda s: float(s['GPA']), students))
 print("GPA values (first 5): ", gpa_values[:5])
 hard_workers = list(filter(lambda s: float(s['study_hours_per_day']) > 4, students))
-print("study_hours_per_day > 4: ", len(hard_workers))
+print("Students studying > 4 hrs: ", len(hard_workers))
 print('-' * 30)
-
+load_data('wrong.csv')
 
 # task 4(A4)
-# print('ANALYSIS RESULT')
-# print('-' * 30)
-#
-# with open('output/result.json', 'w') as f:
-#     json.dump(result, f, indent=4)
-#
-# print('Analysis: ', result["analysis"])
-# print('Total students: ', result["total_students"])
-# print('Average GPA: ', result["average_gpa"])
-# print('Highest GPA: ', result["max_gpa"])
-# print('Lowest GPA: ', result["min_gpa"])
-# print('High performers: ', result["high_performers"])
-# print('-' * 30)
-# print('Result saved to output/result.json')
+print('\nANALYSIS RESULT')
+print('-' * 30)
+
+with open('output/result.json', 'w') as f:
+    json.dump(result, f, indent=4)
+
+print('Analysis: ', result["analysis"])
+print('Total students: ', result["total_students"])
+print('Average GPA: ', result["average_gpa"])
+print('Highest GPA: ', result["max_gpa"])
+print('Lowest GPA: ', result["min_gpa"])
+print('High performers: ', result["high_performers"])
+print('-' * 30)
+print('Result saved to output/result.json')
