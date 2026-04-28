@@ -4,40 +4,46 @@ import os
 import csv
 import json
 
-def check_files():
-    print("Checking file...")
-    if os.path.exists("students.csv"):
-        print("File found: students.csv")
-    else:
-        print("Error: students.csv not found. Please download the file from LMS.")
-        return False
-    print("\nChecking output folder...")
-    if os.path.exists("output"):
-        print("Output folder already exists: output/")
-    else:
-        os.makedirs("output")
-        print("Output folder created: output/")
-    return True
+class FileManager:
+    def __init__(self, filename):
+        self.filename = filename
 
-def load_data(filename):
-    try:
-        print("\nLoading data...")
-        with open(filename, encoding = 'utf-8') as file:
-            reader = csv.DictReader(file)
-            return list(reader)
-    except FileNotFoundError:
-        print(f"Error: File '{filename}' not found. Please check the filename.")
-        return None
-    except Exception:
-        print("General Error")
-        return None
+    def check_files(self):
+        print("Checking file...")
+        if os.path.exists(self.filename):
+            print(f"File found: {self.filename}")
+            return True
+        else:
+            print(f"Error: {self.filename} not found. Please download the file from LMS.")
+            return False
+    def create_output_folder(self, folder='output'):
+        print("\nChecking output folder...")
+        if os.path.exists(folder):
+            print(f"Output folder already exists: {folder}/")
+        else:
+            os.makedirs(folder)
+            print(f"Output folder created: {folder}/")
 
-def preview_data(students, n=5):
-    print(f'\nFirst {n} rows: ')
-    print('-' * 30)
-    for row in students[:n]:
-        print(f"{row['student_id']} | {row['age']} | {row['gender']} | {row['country']} | GPA: {row['GPA']}")
-    print('-' * 30)
+class DataLoader:
+    def load_data(filename):
+        try:
+            print("\nLoading data...")
+            with open(filename, encoding = 'utf-8') as file:
+                reader = csv.DictReader(file)
+                return list(reader)
+        except FileNotFoundError:
+            print(f"Error: File '{filename}' not found. Please check the filename.")
+            return None
+        except Exception:
+            print("General Error")
+            return None
+
+    def preview_data(students, n=5):
+        print(f'\nFirst {n} rows: ')
+        print('-' * 30)
+        for row in students[:n]:
+            print(f"{row['student_id']} | {row['age']} | {row['gender']} | {row['country']} | GPA: {row['GPA']}")
+        print('-' * 30)
 
 def analyse_gpa(students):
     print('GPA Analysis')
@@ -67,7 +73,9 @@ def analyse_gpa(students):
     result = {"analysis": "GPA Statistics", "total_students": len(students), "average_gpa": round(avg_gpa, 2), "max_gpa": max_gpa, "min_gpa": min_gpa, "high_performers": counter}
     return result
 
-check_files()
+file = FileManager('students.csv')
+file.check_files()
+file.create_output_folder()
 students = load_data('students.csv')
 print(f'Data loaded successfully: {len(students)} students')
 preview_data(students)
