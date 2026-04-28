@@ -13,7 +13,7 @@ class FileManager:
             return True
         else:
             print(f"Error: {self.filename} not found. Please download the file from LMS.")
-            exit()
+            return False
     def create_output_folder(self, folder='output'):
         print("\nChecking output folder...")
         if os.path.exists(folder):
