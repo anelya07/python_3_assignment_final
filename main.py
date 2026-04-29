@@ -18,3 +18,8 @@ analyser.print_results()
 
 saver = classes.ResultSaver(analyser.result, 'output/result.json')
 saver.save_json()
+
+print('-'*30)
+wr = classes.DataLoader('wrong.csv')
+wr.load()
+

@@ -71,7 +71,11 @@ class DataAnalyser:
         max_gpa = max(gpas)
         min_gpa = min(gpas)
 
-        self.result = {"analysis": "GPA Statistics", "total_students": len(self.students), "average_gpa": round(avg_gpa, 2), "max_gpa": max_gpa, "min_gpa": min_gpa, "high_performers": counter}
+        high_gpa = list(filter(lambda s: float(s['GPA']) > 3.8, self.students))
+        gpa_values = list(map(lambda s: float(s['GPA']), self.students))
+        hard_workers = list(filter(lambda s: float(s['study_hours_per_day']) > 4, self.students))
+
+        self.result = {"analysis": "GPA Statistics", "total_students": len(self.students), "average_gpa": round(avg_gpa, 2), "max_gpa": max_gpa, "min_gpa": min_gpa, "high_performers": counter, "high_gpa": len(high_gpa), "gpa_values": gpa_values[:5], "hard_workers": len(hard_workers)}
         return self.result
     def print_results(self):
         print('GPA Analysis')
@@ -81,6 +85,12 @@ class DataAnalyser:
         print('Highest GPA: ', self.result["max_gpa"])
         print('Lowest GPA: ', self.result["min_gpa"])
         print('Students GPA > 3.5: ', self.result["high_performers"])
+        print('-' * 30)
+        print("Lambda / Map / Filter")
+        print('-' * 30)
+        print("Students with GPA > 3.8: ", self.result["high_gpa"])
+        print("GPA values (first 5): ", self.result["gpa_values"])
+        print("Students studying > 4 hrs: ", self.result["hard_workers"])
         print('-' * 30)
 
 class ResultSaver:
